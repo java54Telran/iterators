@@ -1,6 +1,7 @@
 package telran.numbers;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class RangePredicate extends Range{
@@ -21,17 +22,35 @@ public class RangePredicate extends Range{
 		return new RangePredicateIterator();
 	}
 	private class RangePredicateIterator implements Iterator<Integer> {
-		//TODO
+		long current = min - 1;
+		RangePredicateIterator(){
+			if(predicate == null) {
+				predicate = x -> true;
+			}
+			setCurrent();
+		}
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			
+			return current <= max;
 		}
 
 		@Override
 		public Integer next() {
-			// TODO Auto-generated method stub
-			return null;
+			if(!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			int result = (int)current;
+			setCurrent();
+			return result;
+		}
+
+		private void setCurrent() {
+			current++;
+			while(current <= max && !predicate.test((int) current)) {
+				current++;
+			}
+			
 		}
 		
 		
